@@ -37,13 +37,22 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""Fire"",
+                    ""name"": ""Attack"",
                     ""type"": ""Button"",
                     ""id"": ""e026bf15-10ea-4fdb-bd01-42e59b8a202d"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MousePosition"",
+                    ""type"": ""Value"",
+                    ""id"": ""144583b0-4545-4cc8-b56a-6dbdb6871ad0"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -109,7 +118,18 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Fire"",
+                    ""action"": ""Attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9085a7a1-56ad-4930-975e-ff3a4432e0ad"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MousePosition"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -138,7 +158,8 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         // Play
         m_Play = asset.FindActionMap("Play", throwIfNotFound: true);
         m_Play_Move = m_Play.FindAction("Move", throwIfNotFound: true);
-        m_Play_Fire = m_Play.FindAction("Fire", throwIfNotFound: true);
+        m_Play_Attack = m_Play.FindAction("Attack", throwIfNotFound: true);
+        m_Play_MousePosition = m_Play.FindAction("MousePosition", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -201,13 +222,15 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Play;
     private List<IPlayActions> m_PlayActionsCallbackInterfaces = new List<IPlayActions>();
     private readonly InputAction m_Play_Move;
-    private readonly InputAction m_Play_Fire;
+    private readonly InputAction m_Play_Attack;
+    private readonly InputAction m_Play_MousePosition;
     public struct PlayActions
     {
         private @Controls m_Wrapper;
         public PlayActions(@Controls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_Play_Move;
-        public InputAction @Fire => m_Wrapper.m_Play_Fire;
+        public InputAction @Attack => m_Wrapper.m_Play_Attack;
+        public InputAction @MousePosition => m_Wrapper.m_Play_MousePosition;
         public InputActionMap Get() { return m_Wrapper.m_Play; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -220,9 +243,12 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Move.started += instance.OnMove;
             @Move.performed += instance.OnMove;
             @Move.canceled += instance.OnMove;
-            @Fire.started += instance.OnFire;
-            @Fire.performed += instance.OnFire;
-            @Fire.canceled += instance.OnFire;
+            @Attack.started += instance.OnAttack;
+            @Attack.performed += instance.OnAttack;
+            @Attack.canceled += instance.OnAttack;
+            @MousePosition.started += instance.OnMousePosition;
+            @MousePosition.performed += instance.OnMousePosition;
+            @MousePosition.canceled += instance.OnMousePosition;
         }
 
         private void UnregisterCallbacks(IPlayActions instance)
@@ -230,9 +256,12 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Move.started -= instance.OnMove;
             @Move.performed -= instance.OnMove;
             @Move.canceled -= instance.OnMove;
-            @Fire.started -= instance.OnFire;
-            @Fire.performed -= instance.OnFire;
-            @Fire.canceled -= instance.OnFire;
+            @Attack.started -= instance.OnAttack;
+            @Attack.performed -= instance.OnAttack;
+            @Attack.canceled -= instance.OnAttack;
+            @MousePosition.started -= instance.OnMousePosition;
+            @MousePosition.performed -= instance.OnMousePosition;
+            @MousePosition.canceled -= instance.OnMousePosition;
         }
 
         public void RemoveCallbacks(IPlayActions instance)
@@ -262,6 +291,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     public interface IPlayActions
     {
         void OnMove(InputAction.CallbackContext context);
-        void OnFire(InputAction.CallbackContext context);
+        void OnAttack(InputAction.CallbackContext context);
+        void OnMousePosition(InputAction.CallbackContext context);
     }
 }

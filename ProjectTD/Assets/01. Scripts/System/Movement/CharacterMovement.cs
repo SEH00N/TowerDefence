@@ -17,6 +17,7 @@ namespace H00N.Movements
         private float verticalVelocity = 0f;
 
         public bool IsGround => characterController.isGrounded;
+        public bool UpdateRotation = true;
 
         private void Awake()
         {
@@ -47,9 +48,12 @@ namespace H00N.Movements
             Vector3 movement = new Vector3(direction.x, 0f, direction.y) * velocity;
             characterController.Move(movement * Time.fixedDeltaTime);
 
-            Quaternion targetRotation = Quaternion.LookRotation(movement);
-            targetRotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.fixedDeltaTime * movementData.RotateSpeed);
-            transform.rotation = targetRotation;
+            if(UpdateRotation)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(movement);
+                targetRotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.fixedDeltaTime * movementData.RotateSpeed);
+                SetRotation(targetRotation);
+            }
         }
 
         private void ApplyGravity()
@@ -73,6 +77,11 @@ namespace H00N.Movements
                 velocity = 0f;
 
             this.direction = direction;
+        }
+
+        public void SetRotation(Quaternion rotate)
+        {
+            transform.rotation = rotate;
         }
     }
 }
