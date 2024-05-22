@@ -52,11 +52,14 @@ namespace H00N.Attacks
             if(gizmo == false)
                 return;
 
-            if(attackData == null || attackData.AttackPosition == null)
+            if(attackData == null)
                 return;
 
             Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(attackData.AttackPosition.position, attackData.Radius);
+            if(attackData.AttackPosition == null)
+                Gizmos.DrawWireSphere(transform.position, attackData.Radius);
+            else
+                Gizmos.DrawWireSphere(attackData.AttackPosition.position, attackData.Radius);
         }
         #endif   
     }

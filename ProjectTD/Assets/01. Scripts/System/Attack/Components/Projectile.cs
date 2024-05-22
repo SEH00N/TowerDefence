@@ -1,17 +1,38 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace H00N.Attacks
 {
     public class Projectile : MonoBehaviour
     {
-        private AttackDataSO attackData = null;
+        [SerializeField] UnityEvent OnHitEvent = null;
+        [SerializeField] AttackDataSO attackData = null;
+        [SerializeField] float speed = 5f;
+        private DamageCaster damageCaster = null;
 
-        public void Init(AttackDataSO data)
+        private void Awake()
         {
-            attackData = data;
+            damageCaster = GetComponent<DamageCaster>();
+            attackData.AttackPosition = transform;
+        }
 
-            Vector3 position = attackData.AttackPosition.position;
-            Quaternion rotation = Quaternion.LookRotation(attackData.AttackPosition.forward);
+        private void FixedUpdate()
+        {
+            transform.Translate(Vector3.forward * (speed * Time.fixedDeltaTime));
+        }
+
+        private void OnCollisionEnter(Collision other)
+        {
+            damageCaster.CastDamageAll();
+            OnHitEvent?.Invoke();
+            
+            Destroy(gameObject);
+        }
+
+        public void Init(Transform attackPosition)
+        {
+            Vector3 position = attackPosition.position;
+            Quaternion rotation = Quaternion.LookRotation(attackPosition.forward);
             transform.SetPositionAndRotation(position, rotation);
         }
     }

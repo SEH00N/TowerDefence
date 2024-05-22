@@ -10,7 +10,7 @@ namespace H00N.Attacks
         public override void Attack()
         {
             Projectile projectile = Instantiate(projectilePrefab);
-            projectile.Init(attackData);
+            projectile.Init(attackData.AttackPosition);
         }
     }
 }
